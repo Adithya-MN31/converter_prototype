@@ -1,0 +1,1255 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EasyConvert | PDF & Word Converter</title>
+
+<style>
+:root {
+  --bg:#050b19;
+  --panel:#0b1730;
+  --panel2:#101f3e;
+  --border:#183b70;
+  --cyan:#00d9ff;
+  --blue:#3979ff;
+  --purple:#a42cff;
+  --pink:#f04de8;
+  --text:#f2f6ff;
+  --muted:#9aafd2;
+  --green:#27edb0;
+}
+
+* { box-sizing:border-box; }
+
+body {
+  margin:0;
+  min-height:100vh;
+  background:
+    radial-gradient(ellipse at 50% -20%,#173d82 0%,transparent 50%),
+    radial-gradient(ellipse at 100% 60%,#25104c 0%,transparent 35%),
+    var(--bg);
+  color:var(--text);
+  font-family:"Segoe UI",Arial,sans-serif;
+}
+
+button,select { font:inherit; }
+button { cursor:pointer; }
+
+button:focus-visible,select:focus-visible {
+  outline:2px solid var(--cyan);
+  outline-offset:3px;
+}
+
+.app {
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+
+.topbar {
+  min-height:91px;
+  padding:18px 3%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:25px;
+  border-bottom:1px solid #173463;
+  background:rgba(5,12,30,.85);
+}
+
+.brand {
+  display:flex;
+  align-items:center;
+  gap:13px;
+}
+
+.logo {
+  font-size:51px;
+  line-height:1;
+  font-weight:900;
+  background:linear-gradient(120deg,#f34de7,#725dff,#00eaff);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+
+.brand-name {
+  font-size:clamp(22px,3vw,33px);
+  font-weight:750;
+  letter-spacing:-1px;
+}
+
+.brand-name span {
+  background:linear-gradient(90deg,var(--cyan),#a95aff);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+
+.tagline {
+  color:var(--muted);
+  font-size:12px;
+  margin-top:5px;
+  letter-spacing:1px;
+}
+
+.statuses {
+  display:flex;
+  gap:24px;
+  flex-wrap:wrap;
+}
+
+.status {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:12px;
+}
+
+.status-icon {
+  font-size:23px;
+  color:var(--cyan);
+}
+
+.status small {
+  display:block;
+  color:var(--muted);
+  margin-top:4px;
+}
+
+.layout {
+  flex:1;
+  display:grid;
+  grid-template-columns:205px minmax(0,1fr) 270px;
+  gap:22px;
+  padding:26px 2.2%;
+}
+
+.sidebar {
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.nav-button {
+  text-align:left;
+  padding:15px;
+  color:#a9bddf;
+  border:1px solid transparent;
+  background:transparent;
+  border-radius:12px;
+  transition:.2s;
+}
+
+.nav-button span {
+  display:inline-block;
+  width:32px;
+  font-size:19px;
+}
+
+.nav-button:hover,.nav-button.active {
+  color:white;
+  border-color:#176dff;
+  background:linear-gradient(100deg,#064b8e77,#7425bc88);
+}
+
+.privacy-card {
+  margin-top:auto;
+  padding:23px 17px;
+  border:1px solid #4d35b2;
+  border-radius:18px;
+  background:linear-gradient(145deg,#102344,#170d35);
+}
+
+.privacy-card .big-icon {
+  font-size:30px;
+  color:var(--cyan);
+}
+
+.privacy-card h3 { margin-bottom:8px; }
+
+.privacy-card p {
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.65;
+}
+
+.main { min-width:0; }
+
+.hero {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  padding:18px 5px 24px;
+}
+
+.hero h1 {
+  font-size:clamp(27px,3.3vw,43px);
+  line-height:1.2;
+  margin:0 0 15px;
+  letter-spacing:-1.5px;
+}
+
+.gradient-text {
+  background:linear-gradient(90deg,#00e7ff,#7478ff,#f15ae7);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+
+.hero p {
+  color:#aabddd;
+  font-size:14px;
+  line-height:1.7;
+  max-width:520px;
+}
+
+.hero-art {
+  flex-shrink:0;
+  font-size:clamp(48px,7vw,84px);
+  color:transparent;
+  background:linear-gradient(120deg,var(--cyan),#7b51ff,var(--pink));
+  -webkit-background-clip:text;
+  background-clip:text;
+  animation:float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,100% { transform:translateY(0); }
+  50% { transform:translateY(-8px); }
+}
+
+.converter {
+  padding:24px;
+  border:1px solid #1261a8;
+  border-radius:19px;
+  background:linear-gradient(150deg,#0d1e3b,#09152c);
+  box-shadow:0 0 35px #005bff12,inset 0 0 25px #113f7b15;
+}
+
+.section-title {
+  font-size:16px;
+  font-weight:650;
+  margin-bottom:6px;
+}
+
+.section-description {
+  color:var(--muted);
+  font-size:13px;
+  margin-bottom:17px;
+}
+
+.dropzone {
+  min-height:205px;
+  border:1px dashed #397cff;
+  border-radius:14px;
+  background:linear-gradient(140deg,#0d2044,#10163b);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  text-align:center;
+  transition:.2s;
+}
+
+.dropzone.dragover {
+  border-color:var(--cyan);
+  background:#10385a;
+  box-shadow:0 0 25px #00d9ff22;
+}
+
+.upload-icon {
+  font-size:42px;
+  color:#829bff;
+  margin-bottom:8px;
+}
+
+.dropzone p {
+  margin:5px 0;
+  color:#c0d2f3;
+}
+
+.muted {
+  color:var(--muted)!important;
+  font-size:12px;
+}
+
+.file-button {
+  margin:12px 0;
+  padding:12px 32px;
+  border:1px solid var(--cyan);
+  border-radius:10px;
+  color:white;
+  font-weight:650;
+  background:linear-gradient(100deg,#087ce9,#8d22e7);
+  box-shadow:0 0 20px #603bff38;
+  transition:.2s;
+}
+
+.file-button:hover {
+  transform:translateY(-2px);
+}
+
+.file-info {
+  display:none;
+  max-width:100%;
+  overflow-wrap:anywhere;
+  color:var(--green);
+  font-size:13px;
+  margin-top:8px;
+}
+
+.format-section { margin-top:24px; }
+
+.format-row {
+  display:grid;
+  grid-template-columns:1fr 45px 1fr;
+  align-items:center;
+  gap:10px;
+}
+
+select {
+  width:100%;
+  padding:13px 12px;
+  border:1px solid #244c83;
+  border-radius:10px;
+  background:#0d1c38;
+  color:white;
+}
+
+select option {
+  background:#0d1c38;
+  color:white;
+}
+
+.arrow {
+  text-align:center;
+  font-size:22px;
+  color:var(--cyan);
+}
+
+.convert-button {
+  width:100%;
+  margin-top:22px;
+  padding:16px;
+  border:1px solid var(--cyan);
+  border-radius:40px;
+  background:linear-gradient(95deg,#03c8ed,#3656ff,#bd24dc);
+  color:white;
+  font-size:16px;
+  font-weight:750;
+  transition:.2s;
+}
+
+.convert-button:hover {
+  transform:translateY(-2px);
+}
+
+.convert-button:disabled {
+  opacity:.45;
+  cursor:not-allowed;
+  transform:none;
+}
+
+.message {
+  margin-top:14px;
+  padding:12px;
+  border-radius:9px;
+  font-size:13px;
+  line-height:1.7;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  display:none;
+}
+
+.message.success {
+  display:block;
+  color:#9afbd7;
+  background:#0c4735;
+  border:1px solid #167957;
+}
+
+.message.error {
+  display:block;
+  color:#ffc0c9;
+  background:#451b30;
+  border:1px solid #8b3459;
+}
+
+.right-panel {
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+
+.info-card {
+  border:1px solid #20539a;
+  border-radius:17px;
+  padding:19px;
+  background:linear-gradient(145deg,#0e1d39,#0a1328);
+}
+
+.info-card h3 {
+  font-size:15px;
+  margin:0 0 7px;
+}
+
+.info-card>p {
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.6;
+  margin:0 0 17px;
+}
+
+.format-list {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+
+.format-chip {
+  border:1px solid #203c67;
+  border-radius:9px;
+  padding:11px 7px;
+  font-size:12px;
+  color:#d5e5ff;
+  background:#0c1a34;
+  text-align:center;
+}
+
+.benefit {
+  display:flex;
+  gap:12px;
+  align-items:flex-start;
+  margin-top:18px;
+}
+
+.benefit-icon {
+  width:37px;
+  height:37px;
+  flex-shrink:0;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:#123e4b;
+  color:var(--green);
+  font-size:18px;
+}
+
+.benefit strong { font-size:13px; }
+
+.benefit p {
+  margin:5px 0 0;
+  font-size:11px;
+  line-height:1.6;
+  color:var(--muted);
+}
+
+.footer {
+  border-top:1px solid #173463;
+  padding:18px 3%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  color:#9eb4d6;
+  font-size:12px;
+  background:#071127;
+}
+
+.footer strong { color:#d9e6ff; }
+.footer .version { color:#718bb4; }
+
+@media(max-width:1150px) {
+  .layout {
+    grid-template-columns:165px minmax(0,1fr);
+  }
+  .right-panel { grid-column:2; }
+  .statuses { gap:12px; }
+}
+
+@media(max-width:720px) {
+  .topbar {
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .statuses { gap:17px; }
+
+  .layout {
+    display:flex;
+    flex-direction:column;
+    padding:17px 4%;
+  }
+
+  .sidebar {
+    flex-direction:row;
+    overflow-x:auto;
+  }
+
+  .nav-button {
+    white-space:nowrap;
+    padding:11px;
+  }
+
+  .privacy-card,.hero-art { display:none; }
+  .converter { padding:16px; }
+
+  .format-row {
+    grid-template-columns:1fr 25px 1fr;
+    gap:5px;
+  }
+
+  .info-card { padding:15px; }
+  .footer { flex-wrap:wrap; }
+}
+
+@media(prefers-reduced-motion:reduce) {
+  *,*::before,*::after {
+    animation:none!important;
+    scroll-behavior:auto!important;
+    transition:none!important;
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">∞</div>
+    <div>
+      <div class="brand-name">Easy<span>Convert</span></div>
+      <div class="tagline">PDF ↔ WORD &nbsp; | &nbsp; DOCUMENT CONVERTER</div>
+    </div>
+  </div>
+
+  <div class="statuses">
+    <div class="status">
+      <span class="status-icon">⬡</span>
+      <div>Privacy focused<small>Local processing</small></div>
+    </div>
+    <div class="status">
+      <span class="status-icon">⌁</span>
+      <div>Two formats<small>PDF and DOCX only</small></div>
+    </div>
+    <div class="status">
+      <span class="status-icon">ϟ</span>
+      <div>Fast & simple<small>Easy conversion</small></div>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+
+  <aside class="sidebar">
+    <button class="nav-button active" data-page="home">
+      <span>⌂</span> Home
+    </button>
+
+    <button class="nav-button" data-page="convert">
+      <span>⟳</span> Convert
+    </button>
+
+    <button class="nav-button" data-page="history">
+      <span>◷</span> History
+    </button>
+
+    <button class="nav-button" data-page="settings">
+      <span>⚙</span> Settings
+    </button>
+
+    <div class="privacy-card">
+      <div class="big-icon">♙</div>
+      <h3>Your privacy matters</h3>
+      <p>Document processing happens in your browser. Your selected file is not intentionally uploaded to a conversion server.</p>
+      <p>Conversion libraries are loaded from a CDN.</p>
+    </div>
+  </aside>
+
+  <main class="main">
+    <section class="hero">
+      <div>
+        <h1>
+          <span class="gradient-text">Convert Your Documents</span><br>
+          With More Freedom
+        </h1>
+        <p>
+          Convert PDF files into editable Word documents and
+          Word documents into PDF files. Simple document conversion
+          in one workspace.
+        </p>
+      </div>
+      <div class="hero-art">∞</div>
+    </section>
+
+    <section class="converter" id="converter">
+      <div class="section-title">▣ &nbsp; Select Your Document</div>
+
+      <div class="section-description">
+        Choose a PDF or Word document from your device.
+      </div>
+
+      <div class="dropzone" id="dropzone">
+        <div class="upload-icon">⇧</div>
+        <p id="drop-title">Drag & drop your document here</p>
+        <p class="muted">or browse your computer</p>
+
+        <button class="file-button" id="browse" type="button">
+          Browse Files &nbsp; ↗
+        </button>
+
+        <input
+          type="file"
+          id="fileInput"
+          accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+          hidden
+        >
+
+        <div class="muted">Supports PDF and Word (.docx) only</div>
+        <div class="file-info" id="fileInfo"></div>
+      </div>
+
+      <div class="format-section">
+        <div class="section-title">⇄ &nbsp; Choose Output Format</div>
+
+        <div class="section-description">
+          The output format is determined by your selected document.
+        </div>
+
+        <div class="format-row">
+          <select id="sourceFormat" aria-label="Source format" disabled>
+            <option value="">Source format</option>
+          </select>
+
+          <div class="arrow">→</div>
+
+          <select id="outputFormat" aria-label="Output format" disabled>
+            <option value="">Select format...</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="convert-button" id="convertBtn" disabled>
+        ϟ &nbsp; Convert Now &nbsp; →
+      </button>
+
+      <div class="message" id="message" role="status" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <aside class="right-panel">
+    <section class="info-card">
+      <h3>▣ &nbsp; Supported Conversions</h3>
+      <p>Only these two conversions are enabled.</p>
+
+      <div class="format-list">
+        <div class="format-chip">📕 PDF → DOCX</div>
+        <div class="format-chip">📘 DOCX → PDF</div>
+      </div>
+
+      <p style="margin-top:15px;margin-bottom:0">
+        DOC, TXT, JPG, PNG, XLSX and other formats are not supported.
+      </p>
+    </section>
+
+    <section class="info-card">
+      <h3>✧ &nbsp; Why EasyConvert?</h3>
+
+      <div class="benefit">
+        <div class="benefit-icon">⬡</div>
+        <div>
+          <strong>Privacy focused</strong>
+          <p>Selected documents are processed in your browser.</p>
+        </div>
+      </div>
+
+      <div class="benefit">
+        <div class="benefit-icon">⇄</div>
+        <div>
+          <strong>Two-way conversion</strong>
+          <p>Convert PDF to Word or Word to PDF.</p>
+        </div>
+      </div>
+
+      <div class="benefit">
+        <div class="benefit-icon">✓</div>
+        <div>
+          <strong>Original stays unchanged</strong>
+          <p>The converted document downloads as a new file.</p>
+        </div>
+      </div>
+
+      <div class="benefit">
+        <div class="benefit-icon">✧</div>
+        <div>
+          <strong>Simple modern design</strong>
+          <p>A clean workspace for document conversion.</p>
+        </div>
+      </div>
+    </section>
+  </aside>
+
+</div>
+
+<footer class="footer">
+  <span class="version">EASYCONVERT · VERSION 1.0</span>
+  <span>
+    <strong>Different documents. One workspace.</strong><br>
+    <span class="muted">Convert smart. Stay private.</span>
+  </span>
+  <span>Built for your project ♡</span>
+</footer>
+
+</div>
+
+<!-- External conversion libraries.
+     Internet is required to load these scripts. -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/docx.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.2/html2pdf.bundle.min.js"></script>
+
+<script>
+"use strict";
+
+const fileInput = document.getElementById("fileInput");
+const browseBtn = document.getElementById("browse");
+const dropzone = document.getElementById("dropzone");
+const fileInfo = document.getElementById("fileInfo");
+const dropTitle = document.getElementById("drop-title");
+const sourceFormat = document.getElementById("sourceFormat");
+const outputFormat = document.getElementById("outputFormat");
+const convertBtn = document.getElementById("convertBtn");
+const message = document.getElementById("message");
+
+let selectedFile = null;
+let conversionHistory = [];
+let isConverting = false;
+
+const MAX_FILE_SIZE = 50 * 1024 * 1024;
+
+const formats = {
+  pdf: ["docx"],
+  docx: ["pdf"]
+};
+
+function extension(name) {
+  return name.includes(".")
+    ? name.split(".").pop().toLowerCase()
+    : "";
+}
+
+function showMessage(text, type) {
+  message.textContent = text;
+  message.className = "message " + type;
+}
+
+function clearMessage() {
+  message.textContent = "";
+  message.className = "message";
+}
+
+function formatSize(bytes) {
+  if (bytes < 1024) return bytes + " bytes";
+
+  if (bytes < 1024 * 1024) {
+    return (bytes / 1024).toFixed(1) + " KB";
+  }
+
+  return (bytes / (1024 * 1024)).toFixed(2) + " MB";
+}
+
+function setBusy(busy) {
+  isConverting = busy;
+  convertBtn.disabled = busy || !selectedFile;
+  browseBtn.disabled = busy;
+  fileInput.disabled = busy;
+  outputFormat.disabled = busy || !selectedFile;
+  sourceFormat.disabled = !selectedFile;
+
+  convertBtn.textContent = busy
+    ? "⟳ Converting locally..."
+    : "ϟ Convert Now →";
+}
+
+function downloadBlob(blob, filename) {
+  return new Promise((resolve, reject) => {
+    try {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download = filename;
+      link.style.display = "none";
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      setTimeout(() => {
+        URL.revokeObjectURL(url);
+        resolve();
+      }, 2000);
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
+function useFile(file) {
+  if (isConverting) return;
+
+  clearMessage();
+
+  selectedFile = null;
+  convertBtn.disabled = true;
+  sourceFormat.disabled = true;
+  outputFormat.disabled = true;
+
+  if (!file) return;
+
+  const ext = extension(file.name);
+  const choices = formats[ext];
+
+  if (!choices) {
+    fileInfo.style.display = "none";
+    dropTitle.textContent = "Drag & drop your document here";
+
+    showMessage(
+      "Unsupported file type. Please select a PDF or DOCX document.",
+      "error"
+    );
+    return;
+  }
+
+  if (file.size === 0) {
+    showMessage("The selected file is empty.", "error");
+    return;
+  }
+
+  if (file.size > MAX_FILE_SIZE) {
+    showMessage(
+      "The file exceeds the 50 MB limit. Choose a smaller file.",
+      "error"
+    );
+    return;
+  }
+
+  selectedFile = file;
+
+  fileInfo.style.display = "block";
+  fileInfo.textContent =
+    "✓ " + file.name + " · " + formatSize(file.size);
+
+  dropTitle.textContent = "Document selected successfully";
+
+  sourceFormat.replaceChildren();
+  sourceFormat.add(new Option(ext.toUpperCase(), ext));
+  sourceFormat.disabled = false;
+
+  outputFormat.replaceChildren();
+
+  choices.forEach(format => {
+    outputFormat.add(
+      new Option(format.toUpperCase(), format)
+    );
+  });
+
+  outputFormat.disabled = false;
+  convertBtn.disabled = false;
+}
+
+browseBtn.addEventListener("click", () => {
+  if (!isConverting) fileInput.click();
+});
+
+fileInput.addEventListener("change", event => {
+  if (event.target.files.length) {
+    useFile(event.target.files[0]);
+  }
+
+  // Allow selecting the same file again.
+  fileInput.value = "";
+});
+
+dropzone.addEventListener("dragover", event => {
+  event.preventDefault();
+  if (!isConverting) dropzone.classList.add("dragover");
+});
+
+dropzone.addEventListener("dragleave", () => {
+  dropzone.classList.remove("dragover");
+});
+
+dropzone.addEventListener("drop", event => {
+  event.preventDefault();
+  dropzone.classList.remove("dragover");
+
+  if (isConverting) return;
+
+  if (event.dataTransfer.files.length) {
+    useFile(event.dataTransfer.files[0]);
+  }
+});
+
+async function pdfToWord(file) {
+  if (!window.pdfjsLib || !window.docx) {
+    throw new Error(
+      "Required libraries failed to load. Check your internet connection and reload."
+    );
+  }
+
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+  const buffer = await file.arrayBuffer();
+
+  const pdf = await pdfjsLib.getDocument({
+    data: new Uint8Array(buffer)
+  }).promise;
+
+  const paragraphs = [];
+
+  for (let pageNumber = 1;
+       pageNumber <= pdf.numPages;
+       pageNumber++) {
+
+    const page = await pdf.getPage(pageNumber);
+    const content = await page.getTextContent();
+
+    const lines = [];
+    let currentLine = [];
+    let previousY = null;
+
+    for (const item of content.items) {
+      if (typeof item.str !== "string") continue;
+
+      const y = item.transform ? item.transform[5] : null;
+
+      if (
+        previousY !== null &&
+        y !== null &&
+        Math.abs(y - previousY) > 3
+      ) {
+        lines.push(currentLine.join(" ").trim());
+        currentLine = [];
+      }
+
+      if (item.str) currentLine.push(item.str);
+
+      if (item.hasEOL) {
+        lines.push(currentLine.join(" ").trim());
+        currentLine = [];
+        previousY = null;
+      } else {
+        previousY = y;
+      }
+    }
+
+    if (currentLine.length) {
+      lines.push(currentLine.join(" ").trim());
+    }
+
+    for (const line of lines) {
+      paragraphs.push(
+        new docx.Paragraph({
+          children: [
+            new docx.TextRun(line || " ")
+          ],
+          spacing: { after: 120 }
+        })
+      );
+    }
+
+    if (pageNumber < pdf.numPages) {
+      paragraphs.push(
+        new docx.Paragraph({
+          children: [],
+          pageBreakBefore: true
+        })
+      );
+    }
+  }
+
+  if (paragraphs.length === 0) {
+    paragraphs.push(
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun("No extractable text was found in this PDF.")
+        ]
+      })
+    );
+  }
+
+  const wordDocument = new docx.Document({
+    sections: [{
+      properties: {},
+      children: paragraphs
+    }]
+  });
+
+  return await docx.Packer.toBlob(wordDocument);
+}
+
+function sanitizeMammothHtml(html) {
+  const parsed = new DOMParser().parseFromString(
+    html,
+    "text/html"
+  );
+
+  parsed.querySelectorAll(
+    "script,style,iframe,object,embed,form,svg,video,audio"
+  ).forEach(element => element.remove());
+
+  parsed.querySelectorAll("*").forEach(element => {
+    for (const attribute of [...element.attributes]) {
+      const name = attribute.name.toLowerCase();
+      const value = attribute.value.trim().toLowerCase();
+
+      if (
+        name.startsWith("on") ||
+        name === "srcdoc" ||
+        (
+          ["href", "src", "xlink:href"].includes(name) &&
+          value.startsWith("javascript:")
+        )
+      ) {
+        element.removeAttribute(attribute.name);
+      }
+    }
+  });
+
+  return parsed.body.innerHTML;
+}
+
+async function wordToPdf(file) {
+  if (!window.mammoth || !window.html2pdf) {
+    throw new Error(
+      "Required libraries failed to load. Check your internet connection and reload."
+    );
+  }
+
+  const result = await mammoth.convertToHtml({
+    arrayBuffer: await file.arrayBuffer()
+  });
+
+  const safeHtml = sanitizeMammothHtml(result.value);
+
+  const container = document.createElement("div");
+
+  container.style.cssText = [
+    "background:#ffffff",
+    "color:#111111",
+    "width:180mm",
+    "padding:0",
+    "margin:0",
+    "font-family:Arial,sans-serif",
+    "font-size:11pt",
+    "line-height:1.5",
+    "overflow-wrap:anywhere"
+  ].join(";");
+
+  container.innerHTML = safeHtml;
+
+  // Basic Word formatting.
+  container.querySelectorAll("h1").forEach(el => {
+    el.style.fontSize = "24pt";
+    el.style.margin = "0 0 12pt";
+  });
+
+  container.querySelectorAll("h2").forEach(el => {
+    el.style.fontSize = "18pt";
+    el.style.margin = "0 0 10pt";
+  });
+
+  container.querySelectorAll("h3").forEach(el => {
+    el.style.fontSize = "14pt";
+    el.style.margin = "0 0 8pt";
+  });
+
+  container.querySelectorAll("table").forEach(table => {
+    table.style.width = "100%";
+    table.style.borderCollapse = "collapse";
+
+    table.querySelectorAll("td,th").forEach(cell => {
+      cell.style.border = "1px solid #777";
+      cell.style.padding = "5px";
+    });
+  });
+
+  container.querySelectorAll("img").forEach(img => {
+    img.style.maxWidth = "100%";
+    img.style.height = "auto";
+  });
+
+  document.body.appendChild(container);
+
+  try {
+    const worker = html2pdf().set({
+      margin: 15,
+      image: {
+        type: "jpeg",
+        quality: 0.95
+      },
+      html2canvas: {
+        scale: 2,
+        useCORS: false,
+        backgroundColor: "#ffffff",
+        logging: false
+      },
+      jsPDF: {
+        unit: "mm",
+        format: "a4",
+        orientation: "portrait"
+      },
+      pagebreak: {
+        mode: ["css", "legacy"],
+        avoid: ["tr", "img"]
+      }
+    }).from(container);
+
+    return await worker.outputPdf("blob");
+  } finally {
+    container.remove();
+  }
+}
+
+convertBtn.addEventListener("click", async () => {
+  if (!selectedFile || isConverting) return;
+
+  const file = selectedFile;
+  const src = extension(file.name);
+  const target = outputFormat.value;
+
+  if (!formats[src] || !formats[src].includes(target)) {
+    showMessage(
+      "This conversion is not supported.",
+      "error"
+    );
+    return;
+  }
+
+  setBusy(true);
+  clearMessage();
+
+  try {
+    let blob;
+
+    if (src === "pdf" && target === "docx") {
+      blob = await pdfToWord(file);
+    } else if (src === "docx" && target === "pdf") {
+      blob = await wordToPdf(file);
+    } else {
+      throw new Error("Unsupported conversion.");
+    }
+
+    if (!blob || blob.size === 0) {
+      throw new Error("The converter returned an empty file.");
+    }
+
+    const outputName =
+      file.name.replace(/\.[^.]+$/, "") +
+      "_converted." + target;
+
+    await downloadBlob(blob, outputName);
+
+    conversionHistory.unshift({
+      input: file.name,
+      output: outputName,
+      time: new Date().toLocaleTimeString()
+    });
+
+    showMessage(
+      "✓ Conversion completed!\n" +
+      "Output: " + outputName + "\n" +
+      "Your original file has not been changed.\n" +
+      "Please open and verify the converted document.",
+      "success"
+    );
+
+  } catch (error) {
+    console.error("Conversion error:", error);
+
+    showMessage(
+      "Conversion failed: " +
+      (error.message || "An unexpected error occurred.") +
+      "\nCheck that the document is valid, not password-protected, " +
+      "and that all required libraries have loaded.",
+      "error"
+    );
+  } finally {
+    setBusy(false);
+  }
+});
+
+// Sidebar navigation.
+document.querySelectorAll(".nav-button").forEach(button => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll(".nav-button").forEach(item => {
+      item.classList.remove("active");
+    });
+
+    button.classList.add("active");
+
+    const page = button.dataset.page;
+
+    if (page === "home" || page === "convert") {
+      document.getElementById("converter").scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+
+      if (page === "convert" && !isConverting) {
+        fileInput.click();
+      }
+
+    } else if (page === "history") {
+      if (conversionHistory.length === 0) {
+        showMessage(
+          "No conversions in this session yet.",
+          "success"
+        );
+      } else {
+        showMessage(
+          "Session history:\n" +
+          conversionHistory.map(item =>
+            item.time + " — " +
+            item.input + " → " +
+            item.output
+          ).join("\n"),
+          "success"
+        );
+      }
+
+      document.getElementById("converter").scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+
+    } else if (page === "settings") {
+      showMessage(
+        "Supported formats: PDF and DOCX only.\n" +
+        "Maximum file size: 50 MB.\n" +
+        "Selected documents are processed in the browser.\n" +
+        "External conversion libraries require internet access to load.",
+        "success"
+      );
+
+      document.getElementById("converter").scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }
+  });
+});
+</script>
+
+</body>
+</html>
